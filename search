@@ -1,0 +1,105 @@
+<?php
+
+include("database.php");
+
+
+?>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+<div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div style="min-width:140%;" class="card">
+                            <div class="card-header card-header-primary">
+                                <h4 class="card-title">Search Results</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive ">
+                                    <table class="table ">
+                                        <thead class=" text-primary">
+                                        </thead>
+                                        <tbody>
+                                        <?php
+                                        $query = $_POST['search'];
+                                        $query = htmlspecialchars($query);
+                                        if(empty($query)) {
+                                            echo '<script type ="text/JavaScript">';  
+                                            echo 'alert("Please, Enter The Name Of The Course That You Want TO Search It .")';  
+                                            echo '</script>';  
+                                            include("ProjectPage.html");
+                                            exit();
+                                        }else{
+
+                                     
+                                        $row_results = mysqli_query($con, "SELECT * FROM course_table WHERE (name LIKE '%" . $query . "%')");
+                                        if (mysqli_num_rows($row_results) > 0) {
+
+                                            while ($row = mysqli_fetch_array($row_results)) {
+                                                ?>
+                                            <tr>
+											<tr>
+                                                <th style="font-weight: 400; font-size: 22px; color: red"><?php echo "Course ID" ?></th>
+                                                <th style="font-weight: 400; font-size: 22px; color: red">
+											    <?php echo "Course Name" ?></th>
+                                            </tr>
+                                                <td><?php echo $row['c_id']; ?></td>
+                                                <td><?php echo $row['name']; ?></td>
+                                            </tr>
+                                             <?php
+                                            }
+                                        } else { // if there is no matching rows do following
+                                            echo "<tr>No results</tr>";
+                                        }
+                                    } 
+                                             ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+id alart
+// $query = $_POST['studentID'];
+    // $query = htmlspecialchars($query);
+    // if(empty($query)) {
+    //     echo '<script type ="text/JavaScript">';  
+    //     echo 'alert("Please, Enter The ID To View The Student Information .")';  
+    //     echo '</script>';  
+    //     //include("ProjectPage.html");
+    //     exit();
+    // }

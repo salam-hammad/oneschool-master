@@ -1,0 +1,292 @@
+<?php
+include "database.php";
+
+session_start();
+
+if (isset($_COOKIE['user']) || isset($_SESSION['user'])) {
+    header("Location:Project Page.html");
+}
+
+if (isset($_POST['email']) && $_POST['studentId']) {
+
+    if (!empty($_POST['email']) && !empty($_POST['studentId'])) {
+        $emailQuery = "select * from student_table where email ='".$_POST['email']."'";
+        $result = mysqli_query($con, $emailQuery);
+        //  include('Project Page.html');
+
+
+        if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $userdbs = $row['email'];
+                $iDdbs = $row['st_id'];
+            }
+
+//if email (post)&&  db: 
+
+            $user = $_POST['email'];
+            $id = md5($_POST['studentId']);
+            if ($userdbs == $user && $iDdbs == $id) {
+                if (isset($_POST['remember'])) {
+                    setcookie("user", $user, time() + 3600);
+                    setcookie("studentId", $id, time() + 3600);
+                }
+
+                if (!isset($_POST['remember'], $_COOKIE['user'], $_COOKIE['studentId'])) {
+                    $_COOKIE['userRem'] = null;
+                    $_COOKIE['passRem'] = null;
+                    setcookie("userRem", "", time() - 3600);
+                    setcookie("passRem", "", time() - 3600);
+                }
+
+                $_SESSION['user'] = $user;
+                header("Location:Project Page.html");
+
+
+            } else {
+                $error = "Incorrect username or password";
+            }
+        }else{
+            $error="Invalid admin username";
+        }
+    } else {
+        $error = "ERROR : empty fields";
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// aya code
+
+<?php
+
+$sname= "localhost";
+
+$unmae= "root";
+
+$password = "";
+
+$db_name = "university1";
+
+$conn = mysqli_connect($sname, $unmae, $password, $db_name);
+
+if (!$conn) {
+
+    echo "Connection failed!";
+
+}
+
+// This demo has used an if statement to check whether the code is working or not. A suitable message is printed, depending on if the database was found. 
+
+// Now, execute the below SQL query to create the user table within your MySQL database.
+?>
+<?php 
+
+session_start(); 
+
+// include "db_conn.php";
+
+if (isset($_POST['semail']) && isset($_POST['sid'])) {
+
+    function validate($data){
+
+       $data = trim($data);
+
+       $data = stripslashes($data);
+
+       $data = htmlspecialchars($data);
+
+       return $data;
+
+    }
+
+    $semail = validate($_POST['semail']);
+
+    $sid = validate($_POST['sid']);
+
+    if (empty($semail)) {
+
+        // header("Location: login.php ? error=User Name is required");
+        echo"<div class='alert'><span class='closebtn' onclick='this.parentElement.style.display='none';" . ">&times;</span>
+                This is an alert box.
+              </div> ";
+        echo"Email.empty";
+                header("Location: login.php ? error=User Name is required");
+
+        exit();
+
+    }else if(empty($sid)){
+
+        header("Location: login.php?error=Password is required");
+        echo"Id Is wrong";
+        exit();
+
+    }else{
+
+        $sql = "SELECT * FROM student WHERE email='$semail' AND std_id='$sid'";
+
+        $result = mysqli_query($conn, $sql);
+
+        if (mysqli_num_rows($result) === 1) {
+
+            $row = mysqli_fetch_assoc($result);
+
+            if ($row['Email'] === $semail && $row['std_id'] === $sid) {
+
+                // echo "Logged in!";
+
+                $_SESSION['studentEmail'] = $row['Email'];
+
+                $_SESSION['studentName'] = $row['FName'];
+
+                $_SESSION['studentID'] = $row['std_id'];
+                
+            include('mainScreen.html');
+                // header("Location: mainScreen.html");
+// echo"AAAA";
+                exit();
+
+            }else{
+
+                // header("Location: login.html?error=Incorect User name or password");
+                echo"<div class='alert'><span class='closebtn' onclick='this.parentElement.style.display='none';" . ">&times;</span>
+                This is an alert box.
+              </div> "."MMMMMMMM";
+                exit();
+
+            }
+
+        }else{
+
+            // header("Location: login.html?error=Incorect User name or password");
+            // echo"Incorect User name or passwordASSSSSSSSSSSSSSSSSS";
+            
+            ?>
+            
+            <html>
+     
+            </html> <?php
+            exit();
+
+        }
+
+    }
+
+}else{
+
+    header("Location: login.html");
+
+    exit();
+
+}
+
+?>
+
+
+
+
+
+// الكود بعد التعديل 
+
+<?php 
+
+include('database.php');
+
+session_start(); 
+
+if (isset($_POST['email']) && isset($_POST['studentId'])) {
+
+    function validate($data){
+
+       $data = trim($data);
+       $data = stripslashes($data);
+       $data = htmlspecialchars($data);
+       return $data;
+
+    }
+
+    $email = validate($_POST['email']);
+    $studentId = validate($_POST['studentId']);
+
+
+    if (empty($email)) {
+
+        echo"<div class='alert'><span class='closebtn' onclick='this.parentElement.style.display='none';" . ">&times;</span>
+                This is an alert box.
+              </div> ";
+        echo"Email.empty";
+                header("Location: login.php ? error=User Name is required");
+
+        exit();
+
+    }else if(empty($studentId)){
+
+        header("Location: login.php?error=Password is required");
+        echo"Id Is wrong";
+        exit();
+
+    }else{
+
+        $sql = "SELECT * FROM student_table WHERE email='$email' AND st_id='$studentId'";
+        $result = mysqli_query($con, $sql);
+
+
+        if (mysqli_num_rows($result) === 1) {
+            $row = mysqli_fetch_assoc($result);
+
+            if ($row['email'] === $email && $row['st_id'] === $studentId) {
+
+                // echo "Logged in!";
+
+                $_SESSION['studentEmail'] = $row['email'];
+                $_SESSION['studentName'] = $row['first_name'];
+                $_SESSION['studentID'] = $row['st_id'];
+                
+                //header("Location: login.php");
+                //  header("Location: Project Page.html");
+                exit();
+
+            }else{
+
+                echo"<div class='alert'><span class='closebtn' onclick='this.parentElement.style.display='none';" . ">&times;</span>
+                This is an alert box.
+              </div> "."MMMMMMMM";
+                exit();
+
+            }
+
+        }else{
+
+            // header("Location: login.html?error=Incorect User name or password");
+            // echo"Incorect User name or passwordASSSSSSSSSSSSSSSSSS";
+            
+            ?>
+            
+            <html>
+     
+            </html> <?php
+            exit();
+
+        }
+
+    }
+
+}else{
+
+    //  header("Location: Project Page.html");
+    header("Location: login.php");
+
+    exit();
+
+}
+
+?>
